@@ -1,16 +1,31 @@
 #coding=utf-8
-#Zhihu_spider Version 1.1 By Bluemit
-
+#Movie_spider2 Version 1.0 By Bluemit
+import chardet
+import gzip
+import random
 from bs4 import BeautifulSoup
 import urlparse
 import urllib2
 import re
+from time import sleep
+
+import StringIO
 
 
 class UrlManager(object):
     def __init__(self):
         self.new_urls = set()
         self.old_urls = set()
+        fin=open("2.txt", "r")
+        while True:
+            line = fin.readline()
+            if line:
+                line=line.strip('\n')
+                self.new_urls.add(line)    # do something here
+            else:
+                break
+        fin.close()
+        print self.new_urls
 
     def add_new_url(self, url):
         if url is None:
@@ -43,52 +58,43 @@ class Downloader(object):
         if response.getcode() != 200:
             return None
         # print response.read()
-        return response.read()
+        print "ss"
+        if response.info().get('Content-Encoding', "") == 'gzip':
+            buf = StringIO.StringIO(response.read())
+            f = gzip.GzipFile(fileobj=buf)
+            content = f.read()
+        else:
+            content = response.read()
+        # print content
+        return content
 
 
-class Zhihu_Parser(object):
-# 知乎网页解析器
-    def _get_new_urls(self, page_url, soup):
-        new_urls = []
-        #新的问题 <a class="question_link" href="/question/39053063">...</a>
-        for link in soup.find_all('a',class_="question_link",href=re.compile(r"/question/\d")):
-            # print 0
-            # print page_url
-            new_url = (link.get('href'))
-            # print new_url
-            new_full_url = urlparse.urljoin('https://www.zhihu.com', new_url)
-            # print new_full_url
-            new_urls.append(new_full_url)
+class Movie_Parser(object):
+# 网页解析器
 
-        return new_urls
-
-    def _get_new_data(self, page_url, soup):
+    def _get_new_data1(self, page_url, soup):
         res_data = {}
-        res_data['url'] = page_url
-        title = soup.find('h2', class_='zm-item-title')
-        # print title
-        # print "title"
-        res_data['title'] = title.get_text()
+        # print soup
+        title=soup.find('img',style="height:260px;")
+        fout=open('result.html','a')
+        fout.write(title['alt'].encode('utf-8'))
+        fout.write('&nbsp;&nbsp;&nbsp;&nbsp;')
+        fout.close()
+        print 'OKOK'
+
+
+        # print conts
+
+
         # print title.get_text()
         # print 'title'
         #赞同数代码：<span class="count">273</span>
         #答案号代码：<a class="zg-anchor-hidden" name="answer-30358716"></a>
-        answers = soup.find_all('div', class_="zm-item-vote-info")
+    #    answers = soup.find_all('div', class_="zm-item-vote-info")
         # print answers
         # print 'answers'
         # answer_urls=soup.find_all('a', class_="count")
-        maxcount=0
-        res_data['counts'] = 0
-        if answers is None:
-            res_data['counts'] = 0
-        for answer in answers:
-            # print answer['data-votecount']
-            # en=answer.get_text().encode("utf-8")
-            en = eval(answer['data-votecount'].encode("utf-8"))
-            print en
-            if en>maxcount:
-                maxcount=en
-                res_data['counts']=maxcount
+    #
             # if en.find('K')!=-1:
             #     res_data['counts'] = en
             #     res_data['status'] = 0
@@ -104,21 +110,85 @@ class Zhihu_Parser(object):
             #         maxcount=eval(en)
             #         res_data['counts'] = maxcount
             #         res_data['status'] = 1
-        if(maxcount>=20000):
+#
+        return title
+    def _get_new_data2(self, page_url, soup):
+        res_data = {}
+        # print soup
+        contsss = soup.find('div',class_='ziliaofr')
+        contss=contsss.find('div',class_='cont')
+        conts=contss.find_all('p')
+        i=0
+        fout=open('result.html','a')
+        for cont in conts:
+
+            i+=1
+            if(i==3 or i==5 or i==7):
+                fout.write(cont.get_text().strip().encode('utf-8'))
+                fout.write('&nbsp;&nbsp;&nbsp;&nbsp;')
+        fout.close()
+
+        title = soup.find('table', class_='datebg datebg01 datebg03')
+        # print title
+        # print "title"
+        # print title
+        ress = title.find_all('td')
+        inver=[]
+        i=0
+        print 'OK00'
+        for res in ress:
+            i+=1
+            if((i-3)%5==0):
+                inver.append(res.get_text().encode('utf-8'))
+        print 'OK01'
+        l=len(inver)-1
+        while(l>=0):
             fout=open('result.html','a')
-            fout.write("<a href='%s'>%s ( %s 赞同)</a><br />" % (res_data["url"].encode("utf-8"), res_data['title'].encode("utf-8"),res_data["counts"]))
-            fout.close()
-        return res_data
+            print 'OK02'
+            fout.write(inver[l])
+            fout.write('&nbsp;&nbsp;&nbsp;&nbsp;')
+            l-=1
+        fout.write('<br>')
+        print 'OK03'
+
+        print inver
+        print '\n'
+        print '\n'
+
+        # print title.get_text()
+        # print 'title'
+        #赞同数代码：<span class="count">273</span>
+        #答案号代码：<a class="zg-anchor-hidden" name="answer-30358716"></a>
+    #    answers = soup.find_all('div', class_="zm-item-vote-info")
+        # print answers
+        # print 'answers'
+        # answer_urls=soup.find_all('a', class_="count")
+    #
+            # if en.find('K')!=-1:
+            #     res_data['counts'] = en
+            #     res_data['status'] = 0
+            #     print "to1"
+            #     break
+            # if eval(en)<100:
+            #     print 777
+            #     print answer.get_text()
+            #     continue
+            # else:
+            #     # print 888
+            #     if(eval(en)>maxcount):
+            #         maxcount=eval(en)
+            #         res_data['counts'] = maxcount
+            #         res_data['status'] = 1
+#
+        return ress
 
     def parse(self, page_url, html_cont):
         if page_url is None or html_cont is None:
             return
         soup = BeautifulSoup(html_cont, 'html.parser',from_encoding='utf-8')
-        new_urls = self._get_new_urls(page_url, soup)
-        # print 22222
-        new_data = self._get_new_data(page_url, soup)
-        # print 33333
-        return new_urls, new_data
+        new_data1 = self._get_new_data1(page_url, soup)
+        new_data2 = self._get_new_data2(page_url, soup)
+        return new_data1
 
 
 
@@ -136,59 +206,54 @@ class Outputer(object):
     def output_html(self):
         fout=open('result.html','a')
         fout.write("</p>")
-        fout.write('<br /><br /><p style="text-align:center">Power By Bluemit</p>')
+        fout.write('<br /><br /><p style="text-align:center">The end</p>')
         fout.write("</body>")
         fout.write("</html>")
 
 
 class SpiderMain():
-    def craw(self,root_url,times): 
+    def craw(self):
         fout=open('result.html','w')
         fout.write("<!DOCTYPE html>")
         fout.write("<html>")
         fout.write("<head>")
         fout.write('<meta charset="utf-8"></meta>')
-        fout.write("<title>用爬虫爬取知乎赞同数超过20K的答案合集</title>")
+        fout.write("<title>电影信息爬虫结果</title>")
         fout.write("</head>")
         fout.write("<body>")
-        fout.write('<h2 style="text-align:center" >用爬虫爬取知乎赞同数超过20K的答案合集(不定期更新)</h2>')
-        fout.write('<h3 style="text-align:center"> 2016-3-23</h3>')
-        fout.write('<p style="align=center">')
+        fout.write('<h2 style="text-align:center" >电影信息爬虫结果</h2>')
+        fout.write('<h3 style="text-align:center"> 2016-3-30</h3>')
+        fout.write('<p style="text-align:center">Power By Bluemit</p><p style="align=center">')
         fout.close()
-        count=1
-        UrlManager.add_new_url(root_url)
         while UrlManager.has_new_url():
             try:
                 new_url=UrlManager.get_new_url()
-                print "\n%d: crawling %s" %(count,new_url)
+                print "\n crawling "
+                print new_url.decode('utf-8')
                 html_cont=Downloader.download(new_url)
-                print new_url
-                # print 12345
-                new_urls,new_data=Parser.parse(new_url,html_cont)
+                print "Download OK"
+                new_data=Parser.parse(new_url,html_cont)
                 # print 111
-                UrlManager.add_new_urls(new_urls)
                 Outputer.collect_data(new_data)
-                if count==times:
-                    break
-                count=count+1
+                time0=random.uniform(8,12);
+                sleep(time0)
             except:
-                print "crawl failed" 
+                print "crawl failed"
+                time0=random.uniform(8,12);
+                sleep(time0)
         Outputer.output_html()
 
 
 if __name__=="__main__":
-    print "Welcome to Zhihu spider"
+    print "Welcome to Movie spider"
 
     UrlManager = UrlManager()
     Downloader = Downloader()
-    Parser = Zhihu_Parser()
+    Parser = Movie_Parser()
     Outputer = Outputer()
-    root = raw_input("Enter First Url : https://www.zhihu.com/question/ ")
-    root_url = "https://www.zhihu.com/question/%s" %(root)
+
         
 
-    times = input("Craw Times : ")
     SpiderMain = SpiderMain()
-    root_url=unicode(root_url,'utf-8')
-    SpiderMain.craw(root_url,times)
+    SpiderMain.craw()
     print "\nEverything is done. Result is in result.html ."

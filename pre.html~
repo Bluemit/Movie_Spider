@@ -1,0 +1,81 @@
+<table class="datebg datebg01 datebg03">
+                            <tr>
+                                <th></th>
+                                <th>场均人次（人）</th>
+                                <th>单周票房（万）</th>
+                                <th>累计票房（万）</th>
+                                <th class="last">上映天数</th>
+                            </tr>
+                                <tr>
+                                        <td class="bgtop">
+                                    <span>第7周</span>2016年03月21日-03月27日
+                                </td>
+                                <td class="arrow">6</td>
+                                <td>488</td>
+                                <td>338691</td>
+                                <td class="last">49</td>                                
+                                </tr>
+                                <tr>
+                                        <td class="bgcent">
+                                    <span>第6周</span>2016年03月14日-03月20日
+                                </td>
+                                <td class="arrow">8</td>
+                                <td>1830</td>
+                                <td>338203</td>
+                                <td class="last">42</td>                                
+                                </tr>
+                                <tr>
+                                        <td class="bgcent">
+                                    <span>第5周</span>2016年03月07日-03月13日
+                                </td>
+                                <td class="arrow">13</td>
+                                <td>6626</td>
+                                <td>336374</td>
+                                <td class="last">35</td>                                
+                                </tr>
+                                <tr>
+                                        <td class="bgcent">
+                                    <span>第4周</span>2016年02月29日-03月06日
+                                </td>
+                                <td class="arrow">13</td>
+                                <td>14609</td>
+                                <td>329750</td>
+                                <td class="last">28</td>                                
+                                </tr>
+                                <tr>
+                                        <td class="bgcent">
+                                    <span>第3周</span>2016年02月22日-02月28日
+                                </td>
+                                <td class="arrow">25</td>
+                                <td>40786</td>
+                                <td>315146</td>
+                                <td class="last">21</td>                                
+                                </tr>
+                                <tr>
+                                        <td class="bgcent">
+                                    <span>第2周</span>2016年02月15日-02月21日
+                                </td>
+                                <td class="arrow">49</td>
+                                <td>92164</td>
+                                <td>274368</td>
+                                <td class="last">14</td>                                
+                                </tr>
+                                <tr>
+                                        <td class="bgcent">
+                                    <span>第1周</span>2016年02月08日-02月14日
+                                </td>
+                                <td class="arrow">84</td>
+                                <td>181730</td>
+                                <td>182220</td>
+                                <td class="last">7</td>                                
+                                </tr>
+                                <tr>
+                                        <td class="bgbottom">
+                                    <span>第0周</span>2016年02月01日-02月07日
+                                </td>
+                                <td class="arrow">77</td>
+                                <td>489</td>
+                                <td>490</td>
+                                <td class="last">0</td>                                
+                                </tr>
+                        </table>
