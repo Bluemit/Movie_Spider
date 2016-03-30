@@ -16,7 +16,7 @@ class UrlManager(object):
     def __init__(self):
         self.new_urls = set()
         self.old_urls = set()
-        fin=open("1.txt", "r")
+        fin=open("2.txt", "r")
         while True:
             line = fin.readline()
             if line:
@@ -127,23 +127,37 @@ class Movie_Parser(object):
                 fout.write(cont.get_text().strip().encode('utf-8'))
                 fout.write('&nbsp;&nbsp;&nbsp;&nbsp;')
         fout.close()
-
-        title = soup.find('table', class_='datebg datebg01 datebg03')
+        print 'ends'
+        try:
+            title = soup.find('table', class_='datebg datebg01 datebg03')
+        except:
+            fout=open('result.html','a')
+            fout.write("<br>")
         # print title
         # print "title"
         # print title
-        ress = title.find_all('td')
+        try:
+            ress = title.find_all('td')
+        except:
+            fout=open('result.html','a')
+            fout.write("<br>")
         inver=[]
         i=0
         print 'OK00'
+        fout=open('result.html','a')
+
         for res in ress:
             i+=1
             if((i-3)%5==0):
                 inver.append(res.get_text().encode('utf-8'))
         print 'OK01'
+
         l=len(inver)-1
-        while(l>=0):
+        if(l==-1):
             fout=open('result.html','a')
+            fout.write("<br>")
+            return res
+        while(l>=0):
             print 'OK02'
             fout.write(inver[l])
             fout.write('&nbsp;&nbsp;&nbsp;&nbsp;')
