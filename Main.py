@@ -121,7 +121,6 @@ class Movie_Parser(object):
         i=0
         fout=open('result.html','a')
         for cont in conts:
-
             i+=1
             if(i==3 or i==5 or i==7):
                 fout.write(cont.get_text().strip().encode('utf-8'))
@@ -150,6 +149,8 @@ class Movie_Parser(object):
             i+=1
             if((i-3)%5==0):
                 inver.append(res.get_text().encode('utf-8'))
+            if((i-5)%5==0 and eval(res.get_text().encode('utf-8'))<=7):
+                break
         print 'OK01'
 
         l=len(inver)-1
