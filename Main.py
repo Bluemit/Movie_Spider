@@ -16,7 +16,7 @@ class UrlManager(object):
     def __init__(self):
         self.new_urls = set()
         self.old_urls = set()
-        fin=open("2.txt", "r")
+        fin=open("1.txt", "r")
         while True:
             line = fin.readline()
             if line:
