@@ -15,7 +15,7 @@ import StringIO
 
 class UrlManager(object):
     def __init__(self):
-        self.new_urls = set()
+        self.new_urls = []
         self.old_urls = set()
         fin=open("3.txt", "r")
         i=0
@@ -24,7 +24,7 @@ class UrlManager(object):
             i+=1
             if (line and (i-1)%7==0):
                 line=line.strip('\n')
-                self.new_urls.add(line)    # do something here
+                self.new_urls.append(line)    # do something here
             else :
                 if line:
                     continue
