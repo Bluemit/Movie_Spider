@@ -2,6 +2,7 @@
 #Movie_spider2 Version 1.0 By Bluemit
 import chardet
 import gzip
+import json
 import random
 from bs4 import BeautifulSoup
 import urlparse
@@ -16,14 +17,19 @@ class UrlManager(object):
     def __init__(self):
         self.new_urls = set()
         self.old_urls = set()
-        fin=open("2.txt", "r")
+        fin=open("3.txt", "r")
+        i=0
         while True:
             line = fin.readline()
-            if line:
+            i+=1
+            if (line and (i-1)%7==0):
                 line=line.strip('\n')
                 self.new_urls.add(line)    # do something here
-            else:
-                break
+            else :
+                if line:
+                    continue
+                else:
+                    break
         fin.close()
         print self.new_urls
 
@@ -54,7 +60,6 @@ class Downloader(object):
         if url is None:
             return None
         response = urllib2.urlopen(url)
-        
         if response.getcode() != 200:
             return None
         # print response.read()
@@ -66,12 +71,27 @@ class Downloader(object):
         else:
             content = response.read()
         # print content
+
         return content
 
 
 class Movie_Parser(object):
 # 网页解析器
 
+    def _get_new_data0(self, page_url, soup):
+        jss=json.loads(soup.encode("utf-8"))
+        js=jss['data2']
+        for j in js:
+            print j['BoxOffice']
+            fout=open('result3.html','a')
+            fout.write(j['BoxOffice'])
+            fout.write("<br>")
+            fout.close()
+        print 'title'
+
+        print 'OKOK'
+
+        return title
     def _get_new_data1(self, page_url, soup):
         res_data = {}
         # print soup
@@ -201,8 +221,7 @@ class Movie_Parser(object):
         if page_url is None or html_cont is None:
             return
         soup = BeautifulSoup(html_cont, 'html.parser',from_encoding='utf-8')
-        new_data1 = self._get_new_data1(page_url, soup)
-        new_data2 = self._get_new_data2(page_url, soup)
+        new_data1 = self._get_new_data0(page_url, soup)
         return new_data1
 
 
@@ -219,7 +238,7 @@ class Outputer(object):
 
 
     def output_html(self):
-        fout=open('result.html','a')
+        fout=open('result3.html','a')
         fout.write("</p>")
         fout.write('<br /><br /><p style="text-align:center">The end</p>')
         fout.write("</body>")
@@ -228,7 +247,7 @@ class Outputer(object):
 
 class SpiderMain():
     def craw(self):
-        fout=open('result.html','w')
+        fout=open('result3.html','w')
         fout.write("<!DOCTYPE html>")
         fout.write("<html>")
         fout.write("<head>")
@@ -237,7 +256,7 @@ class SpiderMain():
         fout.write("</head>")
         fout.write("<body>")
         fout.write('<h2 style="text-align:center" >电影信息爬虫结果</h2>')
-        fout.write('<h3 style="text-align:center"> 2016-3-30</h3>')
+        fout.write('<h3 style="text-align:center"> 2016-3-31</h3>')
         fout.write('<p style="text-align:center">Power By Bluemit</p><p style="align=center">')
         fout.close()
         while UrlManager.has_new_url():
@@ -246,6 +265,7 @@ class SpiderMain():
                 print "\n crawling "
                 print new_url.decode('utf-8')
                 html_cont=Downloader.download(new_url)
+                print html_cont
                 print "Download OK"
                 new_data=Parser.parse(new_url,html_cont)
                 # print 111
